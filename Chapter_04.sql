@@ -1,8 +1,10 @@
 데이터 베이스 구축 절차
 - 데이터 베이스 생성 → 테이블 생성 → 데이터 입력/수정/삭제 → 데이터 조회/활용
 
+# shop_db 데이터 베이스 생성
 CREATE DATABASE shop_db;
 
+# shop+db 데이터 베이스 호출
 use shop_db;
 
 # member 테이블 생성

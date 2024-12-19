@@ -5,6 +5,7 @@
 
 스토어드 프로시저: 프로그래밍 지원 도구(기본적으로 MySQL은 지원하지 않음)
 
+# shop_db 호출
 use shop_db;
 
 # member 테이블 조회
