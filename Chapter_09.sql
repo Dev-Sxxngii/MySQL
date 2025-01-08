@@ -137,3 +137,74 @@ desc buy;
 
 select purchase_id, concat(cast(unit_price as char), 'x', cast(product_stock as char) ,'=') '가격x수량', unit_price*product_stock '구매액' 
 	from buy;
+
+
+CREATE DATABASE test;
+
+use test;
+
+DROP TABLE IF EXISTS member;
+CREATE TABLE member (
+	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	name CHAR(3) NOT NULL,
+	email VARCHAR(50) NOT NULL,
+	password CHAR(15) NOT NULL,
+	phone CHAR(13) NOT NULL UNIQUE,
+	address VARCHAR(20) NOT NULL,
+	time DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO member VALUES(NULL, '서울', '서울@gmail.com', '1111', '010-1111-1111', '서울', now());
+INSERT INTO member VALUES(NULL, '경기', '경기@gmail.com', '2222', '010-2222-2222', '경기', now());
+INSERT INTO member VALUES(NULL, '강원', '강원@gmail.com', '3333', '010-3333-3333', '강원', now());
+select * from member;
+
+DROP TABLE IF EXISTS buy;
+CREATE TABLE buy (
+	product_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    member_id INT UNSIGNED,
+	name CHAR(3) NOT NULL,
+	phone CHAR(13) NOT NULL UNIQUE,
+	address VARCHAR(20) NOT NULL,
+	time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (member_id) REFERENCES member(id) ON UPDATE CASCADE ON DELETE NO ACTION
+);
+
+INSERT INTO buy (member_id, name, phone, address, time)
+SELECT id, '지갑', '010-3333-3333', '강원', NOW() 
+FROM member 
+WHERE name = '강원';
+
+select * from buy;
+
+SELECT * FROM information_schema.COLLATIONS WHERE COLLATION_NAME like 'utf8mb4%';
+
+SELECT SCHEMA_NAME AS 'database', DEFAULT_CHARACTER_SET_NAME AS 'character_set', DEFAULT_COLLATION_NAME AS 'collation'
+FROM information_schema.SCHEMATA;
+
+# 문자 인코딩 및 콜레이션 변경
+ALTER DATABASE test CHARACTER SET=euckr COLLATE=euckr_korean_ci;
+ALTER DATABASE test CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+create table test (
+	id char(3)
+);
+
+insert into test values('a');
+insert into test values('b');
+insert into test values('c');
+
+insert into test values('A');
+insert into test values('B');
+insert into test values('C');
+
+SELECT * FROM test;
+
+SELECT * FROM test order by binary id;
+
+SELECT id as 고유넘버 from test as 테이블;
+
+select * from buy;
+
+use shop_db;
+
