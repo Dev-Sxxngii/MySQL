@@ -1,0 +1,106 @@
+# DB 생성
+CREATE DATABASE study;
+
+# DB 호출
+use study;
+
+
+
+# student 테이블 생성 예외 처리
+DROP TABLE IF EXISTS student;
+
+# student 테이블 생성
+create table student (
+	id INT UNSIGNED PRIMARY KEY, -- 25년 기준 YY-051102-DD YY: 입학일 DD: 데이터 추가 순서대로 01부터 시작
+    name VARCHAR(50) NOT NULL,
+    grade CHAR(1) NOT NULL, -- 1, 2, 3, 4
+	major VARCHAR(50) NOT NULL,
+    advisor CHAR(4),
+    birth_date DATE NOT NULL,
+    phone CHAR(13) NOT NULL, -- xxx-xxxx-xxxx
+    email VARCHAR(50) NOT NULL, 
+    address VARCHAR(100),  
+    enrollment_date DATE NOT NULL,
+	status CHAR(1) NOT NULL -- A: Active I: Inactive G: Graduated
+);
+
+# student 데이터 추가
+INSERT INTO student (id, name, grade, major, advisor, birth_date, phone, email, address, enrollment_date, status) VALUES
+(21050101, 'Nam Inho', '4', 'Business', 'B001', '2003-02-20', '010-8901-2345', 'inho.nam@example.com', 'Andong, Korea', '2021-03-01', 'A'),
+(22050101, 'Shim Jiyoung', '4', 'Business', 'B001', '2003-11-22', '010-6789-0123', 'jiyoung.shim@example.com', 'Jeju, Korea', '2022-03-01', 'A'),
+(22050102, 'Baek Hyerim', '4', 'Education', 'E001', '2003-09-30', '010-7890-1234', 'hyerim.baek@example.com', 'Sokcho, Korea', '2022-03-01', 'A'),
+(24050101, 'Ko Yunji', '2', 'Chemistry', 'C001', '2003-10-10', '010-9012-3456', 'yunji.ko@example.com', 'Suncheon, Korea', '2024-03-01', 'A'),
+(25050101, 'Hong Chaewon', '1', 'Chemistry', 'C001', '2003-12-15', '010-0123-4567', 'chaewon.hong@example.com', 'Gyeongju, Korea', '2025-03-01', 'A');
+
+select id, name, major from student;
+
+# professor 테이블 생성 예외 처리
+DROP TABLE IF EXISTS professor;
+
+# professor 테이블 생성
+CREATE TABLE professor(
+	id CHAR(4) NOT NULL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    specialization VARCHAR(50) NOT NULL, -- student.major에 존재하는
+	birth_date DATE NOT NULL,
+    phone CHAR(13) NOT NULL, -- xxx-xxxx-xxxx
+    email VARCHAR(50) NOT NULL, 
+    address VARCHAR(100) NOT NULL
+);
+
+# professor 데이터 추가
+INSERT INTO professor(id, name, specialization, birth_date, phone, email, address) VALUES
+('B001', 'Kim Hyunjoo', 'Business', '1975-03-21', '010-1234-5678', 'hyunjoo.kim@example.com', 'Seoul, Korea'),
+('C001', 'Park Jaehyun', 'Chemistry', '1982-09-09', '010-3456-7890', 'jaehyun.park@example.com', 'Busan, Korea'),
+('E001', 'Lee Minjae', 'Education', '1980-06-14', '010-2345-6789', 'minjae.lee@example.com', 'Incheon, Korea'),
+('M001', 'Choi Minhyun', 'Math', '1985-09-24', '010-4567-8901', 'minhyun.choi@example.com', 'Chuncheon, Korea');
+
+# lecture 테이블 예외 처리
+DROP TABLE IF EXISTS lecture;
+
+# lecture 테이블 생성
+CREATE TABLE lecture(
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    professor_id CHAR(4) NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    max_student CHAR(2) NOT NULL,
+    FOREIGN KEY(professor_id) REFERENCES professor(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+INSERT INTO lecture(professor_id)
+SELECT ID FROM professor
+WHERE professor_id = id;
+
+
+INSERT INTO lecture(id, professor_id, name, max_student) VALUES
+(NULL, 'Chemistry', '5'),
+(NULL, 'Education', '7'),
+(NULL, 'Math', '10'),
+(NULL, 'Business', '12');
+
+# inner join
+SELECT P.id AS Professor_id, S.id AS Student_id, S.name, S.major
+FROM student AS S
+INNER JOIN professor AS P
+ON S.advisor = P.id;
+
+# inner join
+SELECT P.id AS Professor_id, S.id AS Student_id, S.name, S.major
+FROM student AS S, professor AS P
+WHERE S.advisor = P.id AND S.major = 'Chemistry';
+
+# left join
+SELECT P.id AS Professor_id, S.id AS Student_id, S.name, S.major
+FROM student AS S
+LEFT JOIN professor AS P
+ON S.advisor = P.id;
+
+# left join
+SELECT P.id AS Professor_id, S.id AS Student_id, S.name, S.major
+FROM professor AS P
+LEFT JOIN student AS S
+ON S.advisor = P.id;
+
+SELECT P.id AS Professor_id, S.id AS Student_id, S.name, S.major
+FROM student AS S, FULL JOIN professor As P
+ON S.advisor = P.id;
